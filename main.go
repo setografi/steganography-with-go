@@ -8,12 +8,13 @@ import (
 	"html/template"
 	"image"
 	"image/color"
+	"image/jpeg" // Import JPEG package
 	"image/png"
 	"log"
 	"net/http"
-	
 	"runtime/debug"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -146,7 +147,20 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 		embedDuration := time.Since(start).Seconds()
 
 		var buf bytes.Buffer
-		err = png.Encode(&buf, newImg)
+		var format string
+
+		switch strings.ToLower(strings.TrimPrefix(file.Header.Get("Content-Type"), "image/")) {
+		case "jpeg", "jpg":
+			err = jpeg.Encode(&buf, newImg, nil)
+			format = "jpeg"
+		case "png":
+			err = png.Encode(&buf, newImg)
+			format = "png"
+		default:
+			http.Error(w, "Unsupported image format", http.StatusBadRequest)
+			return
+		}
+
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
@@ -155,6 +169,7 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 		imgBase64Str := base64.StdEncoding.EncodeToString(buf.Bytes())
 		data := map[string]interface{}{
 			"Image":         imgBase64Str,
+			"Format":        format,
 			"EmbedDuration": fmt.Sprintf("%.2f detik", embedDuration),
 		}
 		t, _ := template.ParseFiles("templates/index.html")

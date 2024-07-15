@@ -3,7 +3,6 @@ package main
 import (
 	"bytes"
 	"encoding/base64"
-	"flag"
 	"fmt"
 	"html"
 	"html/template"
@@ -18,28 +17,7 @@ import (
 	"time"
 )
 
-func usage() {
-	fmt.Fprintf(os.Stderr, "usage: helloserver [options]\n")
-	flag.PrintDefaults()
-	os.Exit(2)
-}
-
-var (
-	// greeting = flag.String("g", "Hello", "Greet with `greeting`")
-	addr     = flag.String("addr", "localhost:7860", "address to serve")
-)
-
 func main() {
-	// Parse flags.
-	flag.Usage = usage
-	flag.Parse()
-
-	// Parse and validate arguments (none).
-	args := flag.Args()
-	if len(args) != 0 {
-		usage()
-	}
-
 	// Register handlers.
 	http.HandleFunc("/", greet)
 	http.HandleFunc("/version", version)
@@ -47,8 +25,9 @@ func main() {
 	http.HandleFunc("/extract", extractHandler)
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 
-	log.Printf("serving http://%s\n", *addr)
-	log.Fatal(http.ListenAndServe(*addr, nil))
+	addr := "0.0.0.0:7860"
+	log.Printf("serving http://%s\n", addr)
+	log.Fatal(http.ListenAndServe(addr, nil))
 }
 
 func version(w http.ResponseWriter, r *http.Request) {

@@ -1,38 +1,17 @@
-# Gunakan gambar dasar yang ringan
+# Menggunakan image Golang versi 1.22.4
 FROM golang:1.20-alpine AS builder
 
-# Set environment variables
-ENV GO111MODULE=on \
-    CGO_ENABLED=0 \
-    GOOS=linux \
-    GOARCH=amd64
-
-# Buat direktori kerja untuk aplikasi
+# Set working directory di dalam container
 WORKDIR /app
 
-# Copy semua file ke dalam direktori kerja
+# Menyalin isi dari direktori proyek ke dalam container di /app
 COPY . .
 
-# Install dependencies dan build aplikasi
-RUN go mod tidy
-RUN go build -o main main.go
+# Install dependencies jika ada
+# RUN go mod download
 
-# Gambar akhir untuk menjalankan aplikasi
-FROM alpine:latest
+# Build aplikasi Go
+RUN go build -o main .
 
-# Install ca-certificates agar kita bisa membuat koneksi https
-RUN apk --no-cache add ca-certificates
-
-# Set direktori kerja di dalam kontainer
-WORKDIR /root/
-
-# Copy file yang sudah di build dari gambar builder
-COPY --from=builder /app/main .
-COPY --from=builder /app/templates ./templates
-COPY --from=builder /app/static ./static
-
-# Expose port yang akan digunakan oleh aplikasi
-EXPOSE 7860
-
-# Command untuk menjalankan aplikasi
-CMD ["./main", "-addr", "0.0.0.0:7860"]
+# Menjalankan aplikasi Go pada port 7860
+CMD ["./main", "-port", "7860"]

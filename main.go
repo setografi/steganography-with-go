@@ -25,7 +25,7 @@ func usage() {
 }
 
 var (
-	greeting = flag.String("g", "Hello", "Greet with `greeting`")
+	// greeting = flag.String("g", "Hello", "Greet with `greeting`")
 	addr     = flag.String("addr", "localhost:7860", "address to serve")
 )
 

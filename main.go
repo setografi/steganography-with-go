@@ -11,7 +11,7 @@ import (
 	"image/png"
 	"log"
 	"net/http"
-	"os"
+	
 	"runtime/debug"
 	"strconv"
 	"time"

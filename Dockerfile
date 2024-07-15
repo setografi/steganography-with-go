@@ -14,4 +14,4 @@ COPY . .
 RUN go build -o main .
 
 # Menjalankan aplikasi Go pada port 7860
-CMD ["./main", "-port", "7860"]
+CMD ["./main"]

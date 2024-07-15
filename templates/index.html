@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LSB Steganography</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body
+    class="bg-gray-100 flex items-center justify-center min-h-screen gap-10 flex-wrap"
+  >
+    <div class="bg-white p-8 rounded shadow-md w-full max-w-md">
+      <h1 class="text-2xl font-bold mb-4">LSB Steganography</h1>
+      <form
+        action="/upload"
+        method="post"
+        enctype="multipart/form-data"
+        class="space-y-4"
+      >
+        <div>
+          <label for="message" class="block text-sm font-medium text-gray-700"
+            >Message:</label
+          >
+          <textarea
+            id="message"
+            name="message"
+            rows="3"
+            class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+          ></textarea>
+        </div>
+        <div>
+          <label for="image" class="block text-sm font-medium text-gray-700"
+            >Image:</label
+          >
+          <input
+            type="file"
+            id="image"
+            name="image"
+            accept="image/png"
+            class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+          />
+        </div>
+        <div>
+          <button
+            type="submit"
+            class="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          >
+            Embed
+          </button>
+        </div>
+      </form>
+      {{if .Image}}
+      <div class="mt-6">
+        <h2 class="text-xl font-bold mb-2">Output Image:</h2>
+        <img
+          src="data:image/png;base64,{{.Image}}"
+          alt="Output Image"
+          class="border rounded-md shadow-sm"
+        />
+        <p class="mt-2 text-sm text-gray-700">Time taken: {{.EmbedDuration}}</p>
+      </div>
+      {{end}}
+    </div>
+
+    <div class="bg-white p-8 rounded shadow-md w-full max-w-md">
+      <h1 class="text-2xl font-bold mb-4">Extract Message</h1>
+      <form
+        action="/extract"
+        method="post"
+        enctype="multipart/form-data"
+        class="space-y-4"
+      >
+        <div>
+          <label
+            for="extractImage"
+            class="block text-sm font-medium text-gray-700"
+            >Image:</label
+          >
+          <input
+            type="file"
+            id="extractImage"
+            name="image"
+            accept="image/png"
+            class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+          />
+        </div>
+        <div>
+          <button
+            type="submit"
+            class="w-full bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+          >
+            Extract
+          </button>
+        </div>
+      </form>
+      {{if .Message}}
+      <div class="mt-6">
+        <h2 class="text-xl font-bold mb-2">Extracted Message:</h2>
+        <p class="mt-2 text-sm text-gray-700">{{.Message}}</p>
+        <p class="mt-2 text-sm text-gray-700">
+          Time taken: {{.ExtractDuration}}
+        </p>
+      </div>
+      {{end}}
+    </div>
+  </body>
+</html>
